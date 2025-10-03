@@ -4,7 +4,7 @@ using MediatR;
 
 namespace DigitalPaymentsApi.Features.Payments.Commands;
 
-public record CreatePayment(string UserId, decimal Amount, string Currency) : IRequest<Guid>;
+public record CreatePayment(Guid UserId, decimal Amount, string Currency) : IRequest<Guid>;
 
 public class CreatePaymentHandler : IRequestHandler<CreatePayment, Guid>
 {

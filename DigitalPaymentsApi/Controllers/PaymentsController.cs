@@ -1,3 +1,4 @@
+using DigitalPaymentsApi.Domain;
 using DigitalPaymentsApi.Features.Payments;
 using DigitalPaymentsApi.Features.Payments.Commands;
 using DigitalPaymentsApi.Features.Payments.Dtos;
@@ -31,4 +32,13 @@ public class PaymentsController : ControllerBase
         var payments = await _mediator.Send(new GetPayments());
         return Ok(payments);
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Payment>> GetById(Guid id)
+    {
+        var payment = await _mediator.Send(new GetPaymentById(id));
+        if (payment is null) return NotFound();
+        return Ok(payment);
+    }
+
 }
