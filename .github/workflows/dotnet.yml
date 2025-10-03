@@ -1,0 +1,36 @@
+name: .NET Build & Test
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore dependencies
+      run: dotnet restore DigitalPaymentsApi/DigitalPaymentsApi.csproj
+    
+    - name: Build
+      run: dotnet build DigitalPaymentsApi/DigitalPaymentsApi.csproj --no-restore --configuration Release
+    
+    - name: Test
+      run: dotnet test DigitalPaymentsApi/DigitalPaymentsApi.csproj --no-build --configuration Release --verbosity normal --logger "console;verbosity=detailed"
